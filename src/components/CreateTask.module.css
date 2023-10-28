@@ -1,0 +1,52 @@
+.container_form_create_task{
+    width: 90%;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #d2d2d2;
+}
+
+.container_form_create_task h2{
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.form_create_task{
+    width: 100%;
+    padding: 15px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+
+.input, .input_submit{
+    padding: 5px;
+    margin-right: 2px;
+    margin-left: 2px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1px solid #d2d2d2;
+    text-align: center;
+}
+
+@media screen and (min-width : 540px) {
+    
+    .form_create_task label{
+        width: 65%;
+    }
+
+    .input{
+        width: 100%;
+    }
+
+    .input_submit{
+        width: 30%;
+    }
+
+   
+}
+
+
+
