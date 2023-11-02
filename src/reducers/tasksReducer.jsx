@@ -14,7 +14,7 @@ export const Reducer = (state, action) => {
             const { setIdTasks }  = actionPayload;
             const { task } = state
 
-            if(task.nameTask.length < 1) return
+            if(task.nameTask.length < 1) return {...state}
         
             //Guardamos nueva Tarea
             if(task.id == null){
@@ -151,7 +151,7 @@ export const Reducer = (state, action) => {
             const {param} = actionPayload
 
             const { tasks } = state
-            if(tasks.length < 1) return 
+            if(tasks.length < 1) return {...state}
             
             const status = {
                 completed : 1,
