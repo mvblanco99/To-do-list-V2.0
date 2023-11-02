@@ -1,11 +1,29 @@
-import propTypes from 'prop-types'
 import stylesSearchTask from './SearchTask.module.css'
 import SearchIcon from '@mui/icons-material/Search';
+import { useTodo } from '../hooks/useTodo';
+import { useRef } from 'react';
 
-const SearchTask = ({tasks,taskSearch,searchTask,handleChangeSearch}) => {
+const SearchTask = () => {
     
+    const { dispatch, state } = useTodo()
+    const { taskSearch } = state 
+    const previousSearchTask = useRef('')
+
+    const handleChange = (e) => {
+        dispatch({
+            type : 'HANDLE_INPUT_CHANGE_TASK_SEARCH',
+            payload : { e }
+        })
+    }
+
     const handleClick = () => {
-        searchTask({tasks,taskSearch})
+
+        if(previousSearchTask.current === taskSearch) return
+        previousSearchTask.current = taskSearch
+
+        dispatch({
+            type : 'SEARCH_TASK',
+        })
     }
 
     return (
@@ -19,8 +37,8 @@ const SearchTask = ({tasks,taskSearch,searchTask,handleChangeSearch}) => {
                         id="search"
                         placeholder="Insert task name"
                         className={stylesSearchTask.input} 
+                        onChange={handleChange}
                         value={taskSearch}
-                        onChange={handleChangeSearch}
                     />
                 </label>
                 
@@ -37,10 +55,7 @@ const SearchTask = ({tasks,taskSearch,searchTask,handleChangeSearch}) => {
 }
 
 SearchTask.propTypes = {
-    tasks : propTypes.arrayOf(Object).isRequired,
-    taskSearch : propTypes.string.isRequired,
-    searchTask : propTypes.func.isRequired,
-    handleChangeSearch : propTypes.func.isRequired,
+   
 }
 
 export default SearchTask

@@ -1,135 +1,29 @@
-import { useEffect, useRef, useState } from "react"
-
-const initialState = {
-    nameTask : '',
-    completedTask : false,
-}
+import { useContext, useEffect } from "react"
+import { TaskContext } from "../context/TaskContext"
 
 export const useTodo = () => {
     
-    const [task, setTask] = useState(initialState)
-    const [tasks, setTasks] = useState([])
-    const [action, setAction] = useState('Save');
-    const setIdTasks = useRef(0);
+    const context = useContext(TaskContext);
 
-    const handleChange = (e) => {
-
-        if(e.target.value.length > 15) return 
-        //Generamos una copia de la tarea
-        const newTask = {...task, nameTask : e.target.value}
-        setTask(newTask);
-    }
-
-    const saveTask = ({task}) => {
-
-        if(task.nameTask.length < 1) return
-
-        //Guardamos nueva Tarea
-        if(task.id == null){
-
-            const newTask = {
-                nameTask : task.nameTask,
-                completedTask : task.completedTask,
-                id : setIdTasks.current
-            }
-
-            const newTasks = [...tasks, newTask];
-            
-            setTasks(newTasks);
-            localStorage.setItem('tasks', JSON.stringify(newTasks))
-            resetTask()
-            
-        }else{
-            //Modificamos la tarea
-
-            const newTask = {
-                nameTask : task.nameTask,
-                completedTask : task.completedTask,
-                id : task.id
-            }
-
-            const newTasks = tasks.filter( item => task.id != item.id);
-            newTasks.push(newTask);
-            setTasks(newTasks);
-            localStorage.setItem('tasks', JSON.stringify(newTasks))
-            resetTask()
-        }
-
-    }
-
-    const deleteTask = ({param : task}) => {
-        const newTasks = tasks.filter( item => task.id != item.id);
-        setTasks(newTasks);
-        localStorage.setItem('tasks', JSON.stringify(newTasks))
-        resetTask()
-    }
-
-    const editTask = ({param : task}) => {
-        const newTask = {
-            nameTask : task.nameTask,
-            completedTask : task.completedTask,
-            id : task.id
-        }
-
-        setAction('Update')
-        setTask(newTask)
-        resetTask()
-    }
-
-    const deleteTasks = () => {
-        const newTasks = [];
-        setTasks(newTasks)
-        localStorage.setItem('tasks', JSON.stringify(newTasks))
-        resetTask()
-    }
-
-    const checked = ({task}) => {
-        console.log('Checked')
-        const newTask = {
-            nameTask : task.nameTask,
-            completedTask : !task.completedTask,
-            id : task.id
-        }
-
-        const newTasks = tasks.filter( item => task.id != item.id);
-        newTasks.push(newTask);
-        setTasks(newTasks)
-        localStorage.setItem('tasks', JSON.stringify(newTasks))
-    }
-
-    const resetTask = () => {
-        setTask(initialState)
-        setAction('Save')
-    }
-
+    if(context === undefined)  throw new Error('Cannot access task context');
+    
+    const { dispatch, setIdTasks, state } = context;
+    const { taskSearch } = state 
+    
     useEffect(()=>{
-        
-        const getItemLocalStorage = localStorage.getItem('tasks');
-        const tasksLocalStorage = JSON.parse(getItemLocalStorage);
-        
-        if(tasksLocalStorage == null){
-            setIdTasks.current = 0;
-        }else{
-            const arrayId = tasksLocalStorage.map(taskId => taskId.id);
-            const idMax = Math.max(...arrayId)
-            setIdTasks.current = idMax
-            setTasks(tasksLocalStorage);
-        }
+        dispatch({
+            type: 'GET_TASKS_LOCAL_STORAGE',
+            payload: {setIdTasks}
+        })
     },[])
 
-    useEffect(() => {
-        setIdTasks.current = setIdTasks.current + 1;
-    },[tasks])
+    useEffect(()=>{
+        if(taskSearch.length < 1){
+            dispatch({
+                type: 'UPDATE_SEARCH_VALUE',
+            })
+        }
+    },[taskSearch])
 
-    return {
-        handleChange, 
-        task, 
-        saveTask, 
-        tasks, 
-        deleteTask, 
-        editTask, 
-        checked, 
-        action, 
-        deleteTasks
-    }
+    return context
 }

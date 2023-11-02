@@ -1,11 +1,11 @@
-export const sortStatusTask = ({tasks, category}) => {
+export const sortStatusTask = ({showTasks:tasks, status}) => {
     
     let ordered_tasks = [];
 
     if(tasks.length > 0){
-        if(category == 1){
+        if(status == 1){
             ordered_tasks = tasks.filter( item => item.completedTask)
-        }else if(category == 2){
+        }else if(status == 2){
             ordered_tasks = tasks.filter( item => !item.completedTask)
         }else{
             ordered_tasks = [...tasks];

@@ -1,12 +1,27 @@
-import React from 'react';
-import propTypes from 'prop-types'
 import Table from './Table'
 import stylesListTaks from './ListTasks.module.css'
 import { sortIdTask, sortStatusTask } from '../helper/sortTasks';
+import { useTodo } from '../hooks/useTodo';
 
-const ListTaks = ({tasks, editTask, deleteTask, checked, category, deleteTasks}) => {
+const ListTaks = () => {
 
-    let ordered_tasks = sortStatusTask({tasks, category});
+    const {state, dispatch} = useTodo();
+    console.log('me renderice')
+    const { tasks, status, tasksFound, search,taskSearch} = state;
+
+    const handleClick = () => {
+        dispatch({
+            type : 'DELETE_TASKS'
+        })
+    }
+
+    const showTasks = taskSearch.length < 1 
+        ? tasks 
+        : search && taskSearch.length > 0
+            ? tasksFound
+            : tasks
+
+    let ordered_tasks = sortStatusTask({showTasks, status});
     ordered_tasks = sortIdTask({ordered_tasks});
 
   return (
@@ -25,7 +40,7 @@ const ListTaks = ({tasks, editTask, deleteTask, checked, category, deleteTasks})
 
         {ordered_tasks.length > 0 && 
             <button 
-                onClick={deleteTasks} 
+                onClick={handleClick} 
                 className={stylesListTaks.button_delete_tasks}>
                 Delete Tasks
             </button>
@@ -33,27 +48,9 @@ const ListTaks = ({tasks, editTask, deleteTask, checked, category, deleteTasks})
 
         <Table 
             ordered_tasks={ordered_tasks} 
-            editTask={editTask} 
-            deleteTask={deleteTask} 
-            checked={checked}
         />
     </>
   )
 }
 
-ListTaks.propTypes = {
-    tasks : propTypes.arrayOf(Object).isRequired,
-    editTask : propTypes.func.isRequired,
-    deleteTask : propTypes.func.isRequired,
-    checked : propTypes.func.isRequired,
-    category : propTypes.number,
-    deleteTasks : propTypes.func.isRequired,
-}
-
-function areEqual(prevProps, nextProps) {
-    // Aquí, solo estamos comparando si la prop 'value' ha cambiado
-    return prevProps.tasks === nextProps.tasks 
-        && prevProps.category === nextProps.category    
-}
-
-export default React.memo(ListTaks,areEqual)
+export default ListTaks

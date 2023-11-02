@@ -1,12 +1,24 @@
-import React from 'react';
-import propTypes from 'prop-types'
 import stylesCreateTask from './CreateTask.module.css'
+import { useTodo } from '../hooks/useTodo';
 
-const CreateTask = ({ handleChange, task, saveTask, action }) => {
+const CreateTask = () => {
+
+  const { dispatch, setIdTasks, state } = useTodo();
+  const { task, action } = state
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    saveTask({task})
+    dispatch({
+      type : 'ADD_TASK',
+      payload : {setIdTasks}
+    })
+  }
+
+  const handleChange = (e) => {
+    dispatch({
+      type : 'HANDLE_INPUT_CHANGE',
+      payload : {e}
+    })
   }
 
   return (
@@ -31,25 +43,13 @@ const CreateTask = ({ handleChange, task, saveTask, action }) => {
 
           <input 
             type="submit" 
-            value={action} 
+            value={action}
             className={stylesCreateTask.input_submit}
-            />
+          />
         </form>
       </div>
     </>
   )
 }
 
-CreateTask.propTypes = {
-  task : propTypes.object,
-  handleChange : propTypes.func.isRequired,
-  saveTask : propTypes.func.isRequired,
-  action : propTypes.string.isRequired,
-}
-
-function areEqual(prevProps, nextProps) {
-  // Aquí, solo estamos comparando si la prop 'value' ha cambiado
-  return prevProps.task === nextProps.task;
-}
-
-export default React.memo(CreateTask, areEqual)
+export default CreateTask

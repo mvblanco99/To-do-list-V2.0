@@ -1,9 +1,12 @@
-import propTypes from 'prop-types'
 import Button from './Button'
 import stylesStatusTask from './StatusTasks.module.css'
 import { setActive } from '../helper/setActive'
+import { useTodo } from '../hooks/useTodo'
 
-const StatusTasks = ({sortCategory, category, tasks}) => {
+const StatusTasks = () => {
+
+  const { state } = useTodo();
+  const { status } = state
 
   return (
     <>  
@@ -13,36 +16,24 @@ const StatusTasks = ({sortCategory, category, tasks}) => {
           <div className={stylesStatusTask.container_buttons}>
             <Button 
               name='All' 
-              func={sortCategory} 
               param='all' 
-              active={setActive(category,0)}
-              tasks = {tasks}
+              active={setActive(status,0)}
             />  
             <Button 
               name='Completed' 
-              func={sortCategory} 
               param='completed' 
-              active={setActive(category,1)}
-              tasks = {tasks}
+              active={setActive(status,1)}
             /> 
             <Button 
-              name='No Completed' 
-              func={sortCategory} 
+              name='No Completed'  
               param='noCompleted'
-              active={setActive(category,2)}
-              tasks = {tasks}
+              active={setActive(status,2)}
             />
           </div> 
               
       </div>
     </>
   )
-}
-
-StatusTasks.propTypes = {
-  sortCategory : propTypes.func.isRequired,
-  category : propTypes.number.isRequired,
-  tasks: propTypes.arrayOf(Object)
 }
 
 export default StatusTasks
